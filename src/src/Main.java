@@ -64,9 +64,6 @@ public class Main {
 
             String branch = Lib.decode_from_base64(encodedBranch);
 
-            System.out.println("Server Decoded branch: " + branch);
-
-            log("Server decoded branch: " + branch);
 
             if (!branch.startsWith("bcode~")) {
                 System.out.println("Server ERROR: Invalid branch format");
@@ -76,6 +73,10 @@ public class Main {
             String branchCode = branch.split("~")[1];
             File dir = new File("data/" + branchCode);
             dir.mkdir();
+
+            System.out.println("Server Decoded branch: " + branchCode);
+
+            log("Server decoded branch: " + branch);
 
             log("Server Created branch: " + branchCode);
 
@@ -89,10 +90,12 @@ public class Main {
             System.out.println("Server Received (file): " + base64Data);
             log("Server Received (file): " + base64Data);
 
-            String decoded = Lib.decode_from_base64(base64Data);
+            var base64DataWithoutDelimeter = base64Data.replace("~","");
 
-            System.out.println("Server Decoded (file): " + decoded);
-            log("Server Decoded (file): " + decoded);
+            String decoded = Lib.decode_from_base64(base64DataWithoutDelimeter);
+
+            System.out.println("Server Decoded (file): " + System.lineSeparator() + decoded);
+            log("Server Decoded (file): " + System.lineSeparator() + decoded);
 
             File outFile = new File("data/" + branchCode + "/branch_weekly_sales.txt");
             try (FileWriter writer = new FileWriter(outFile)) {
@@ -110,7 +113,7 @@ public class Main {
                 if (input != null) input.close();
                 if (output != null) output.close();
                 clientSocket.close();
-                log("Server closed");
+                log("Finished handling of client");
             } catch (IOException e) {
                 System.out.println("Server: ERROR closing client: " + e.getMessage());
             }
